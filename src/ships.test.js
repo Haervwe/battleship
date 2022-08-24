@@ -1,4 +1,4 @@
-let ship = require("./logic");
+let ship = require("./ships");
 
 // ship class test;
 
@@ -64,6 +64,5 @@ it("checks constuctor floats function", () => {
   testship.shot(3);
   testship.shot(4);
   testship.shot(5);
-  console.log(testship.slots);
   expect(testship.floats).toBe(false);
 });
