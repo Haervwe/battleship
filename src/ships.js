@@ -35,8 +35,8 @@ class ship {
    * @param {number} n
    */
   shot(n) {
-    if (n <= this.#size && n > 0) {
-      this.#slots[n - 1] = 0;
+    if (n < this.#size && n >= 0) {
+      this.#slots[n] = 0;
       this.checkfloat();
     }
   }

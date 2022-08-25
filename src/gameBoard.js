@@ -40,6 +40,15 @@ class board {
   get positions() {
     return this.#positions;
   }
+  allShipsPlaced() {
+    let result = true;
+    this.#boats.forEach((boat) => {
+      if (boat.placed == false) {
+        result = false;
+      }
+    });
+    return result;
+  }
   placeShip(index, pos, dir) {
     if (this.#boats[index].placed != false) {
       return "Ship already placed";
@@ -110,9 +119,18 @@ class board {
       if (x == this.#positions[i].cords.x && y == this.#positions[i].cords.y) {
         this.#grid[x][y] = 2;
         let boat = this.#boats[this.#positions[i].shipIndex].ship;
-        boat.shot(this.#boats[this.#positions[i].shipAtackVector]);
+        boat.shot(this.#positions[i].shipAtackVector);
       }
     }
+  }
+  isGameOver() {
+    let result = true;
+    this.#boats.forEach((boat) => {
+      if (boat.ship.floats == true) {
+        result = false;
+      }
+    });
+    return result;
   }
 }
 

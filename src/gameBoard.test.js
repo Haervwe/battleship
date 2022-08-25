@@ -238,3 +238,85 @@ it("check 4 attacks on ship grid result", () => {
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   ]);
 });
+
+it("check 4 attacks on ship ship result", () => {
+  let test = new board(rules.size, rules.ships);
+  test.placeShip(0, { x: 3, y: 3 }, "x");
+  test.recieveAttack(3, 3);
+  test.recieveAttack(4, 3);
+  test.recieveAttack(5, 3);
+  test.recieveAttack(6, 3);
+  test.recieveAttack(7, 3);
+  expect(test.boats[0].ship.floats).toBe(false);
+});
+
+it("check isGameOver fn with all ship placed all sunked", () => {
+  let test = new board(rules.size, rules.ships);
+  test.placeShip(0, { x: 3, y: 3 }, "x");
+  test.placeShip(1, { x: 0, y: 0 }, "y");
+  test.placeShip(2, { x: 3, y: 5 }, "x");
+  test.placeShip(3, { x: 2, y: 6 }, "y");
+  test.placeShip(4, { x: 9, y: 8 }, "y");
+  test.recieveAttack(3, 3);
+  test.recieveAttack(4, 3);
+  test.recieveAttack(5, 3);
+  test.recieveAttack(6, 3);
+  test.recieveAttack(7, 3);
+  test.recieveAttack(0, 0);
+  test.recieveAttack(0, 1);
+  test.recieveAttack(0, 2);
+  test.recieveAttack(0, 3);
+  test.recieveAttack(3, 5);
+  test.recieveAttack(4, 5);
+  test.recieveAttack(5, 5);
+  test.recieveAttack(2, 6);
+  test.recieveAttack(2, 7);
+  test.recieveAttack(2, 8);
+  test.recieveAttack(9, 8);
+  test.recieveAttack(9, 9);
+  expect(test.isGameOver()).toBe(true);
+});
+
+it("check isGameOver fn with all ship placed and one shot left on one ship", () => {
+  let test = new board(rules.size, rules.ships);
+  test.placeShip(0, { x: 3, y: 3 }, "x");
+  test.placeShip(1, { x: 0, y: 0 }, "y");
+  test.placeShip(2, { x: 3, y: 5 }, "x");
+  test.placeShip(3, { x: 2, y: 6 }, "y");
+  test.placeShip(4, { x: 9, y: 8 }, "y");
+  test.recieveAttack(3, 3);
+  test.recieveAttack(4, 3);
+  test.recieveAttack(5, 3);
+  test.recieveAttack(6, 3);
+  test.recieveAttack(7, 3);
+  test.recieveAttack(0, 0);
+  test.recieveAttack(0, 1);
+  test.recieveAttack(0, 2);
+  test.recieveAttack(0, 3);
+  test.recieveAttack(3, 5);
+  test.recieveAttack(4, 5);
+  test.recieveAttack(5, 5);
+  test.recieveAttack(2, 6);
+  test.recieveAttack(2, 7);
+  test.recieveAttack(2, 8);
+  test.recieveAttack(9, 8);
+  expect(test.isGameOver()).toBe(false);
+});
+
+it("check allShipsPlaced fn with all ship placed", () => {
+  let test = new board(rules.size, rules.ships);
+  test.placeShip(0, { x: 3, y: 3 }, "x");
+  test.placeShip(1, { x: 0, y: 0 }, "y");
+  test.placeShip(2, { x: 3, y: 5 }, "x");
+  test.placeShip(3, { x: 2, y: 6 }, "y");
+  test.placeShip(4, { x: 9, y: 8 }, "y");
+  expect(test.allShipsPlaced()).toBe(true);
+});
+it("check allShipsPlaced fn with all but one ship placed", () => {
+  let test = new board(rules.size, rules.ships);
+  test.placeShip(0, { x: 3, y: 3 }, "x");
+  test.placeShip(1, { x: 0, y: 0 }, "y");
+  test.placeShip(2, { x: 3, y: 5 }, "x");
+  test.placeShip(3, { x: 2, y: 6 }, "y");
+  expect(test.allShipsPlaced()).toBe(false);
+});

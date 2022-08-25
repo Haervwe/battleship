@@ -41,7 +41,7 @@ it("cheks constructor floats inmutability", () => {
 
 it("checks constuctor array changes with shot method", () => {
   let testship = new ship(5);
-  testship.shot(3);
+  testship.shot(2);
   expect(testship.slots).toStrictEqual([1, 1, 0, 1, 1]);
 });
 
@@ -59,10 +59,10 @@ it("checks constuctor array changes with shot method outside the ship with negat
 
 it("checks constuctor floats function", () => {
   let testship = new ship(5);
+  testship.shot(0);
   testship.shot(1);
   testship.shot(2);
   testship.shot(3);
   testship.shot(4);
-  testship.shot(5);
   expect(testship.floats).toBe(false);
 });
