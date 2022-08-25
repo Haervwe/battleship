@@ -42,6 +42,7 @@ it("check place ship with large ship 5 pos 3/3 direction y", () => {
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   ]);
 });
+
 it("check place ship with large ship 5 pos 3/3 direction x", () => {
   let test = new board(rules.size, rules.ships);
   test.placeShip(0, { x: 3, y: 3 }, "x");
@@ -120,17 +121,120 @@ it("checks place ship in case of colitions", () => {
   expect(test.placeShip(2, { x: 5, y: 3 }, "x")).toBe("Can not overlap ships");
 });
 
-it("check place ship position mark", () => {
+it("check place ship placed mark", () => {
   let test = new board(rules.size, rules.ships);
   test.placeShip(0, { x: 3, y: 3 }, "x");
-  expect(test.boats[0].position).toStrictEqual({
-    init: { x: 3, y: 3 },
-    end: { x: 7, y: 3 },
-  });
+  expect(test.boats[0].placed).toBe(true);
+});
+
+it("check postions array after placing one ship", () => {
+  let test = new board(rules.size, rules.ships);
+  test.placeShip(0, { x: 3, y: 3 }, "x");
+  expect(test.positions).toStrictEqual([
+    {
+      cords: { x: 3, y: 3 },
+      shipIndex: 0,
+      shipAtackVector: 0,
+    },
+    {
+      cords: { x: 4, y: 3 },
+      shipIndex: 0,
+      shipAtackVector: 1,
+    },
+    {
+      cords: { x: 5, y: 3 },
+      shipIndex: 0,
+      shipAtackVector: 2,
+    },
+    {
+      cords: { x: 6, y: 3 },
+      shipIndex: 0,
+      shipAtackVector: 3,
+    },
+    {
+      cords: { x: 7, y: 3 },
+      shipIndex: 0,
+      shipAtackVector: 4,
+    },
+  ]);
 });
 
 it("check place ship for duplicate ship placement", () => {
   let test = new board(rules.size, rules.ships);
   test.placeShip(0, { x: 3, y: 3 }, "x");
   expect(test.placeShip(0, { x: 2, y: 2 }, "x")).toBe("Ship already placed");
+});
+
+it("check recieve attack on valid coordinates, hitting water", () => {
+  let test = new board(rules.size, rules.ships);
+  test.recieveAttack(3, 3);
+  expect(test.grid).toStrictEqual([
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 3, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  ]);
+});
+
+it("check recieve attack on invalid coordinates", () => {
+  let test = new board(rules.size, rules.ships);
+  expect(test.recieveAttack(10, 3)).toBe("Atack out of range");
+});
+
+it("check recieve attack on valid coordinates repeating shot", () => {
+  let test = new board(rules.size, rules.ships);
+  test.recieveAttack(3, 3);
+  expect(test.recieveAttack(3, 3)).toBe("Attack already made");
+});
+
+it("check recieve attack on valid coordinates repeating shot", () => {
+  let test = new board(rules.size, rules.ships);
+  test.recieveAttack(3, 3);
+  expect(test.recieveAttack(3, 3)).toBe("Attack already made");
+});
+
+it("check attack on ship grid result", () => {
+  let test = new board(rules.size, rules.ships);
+  test.placeShip(0, { x: 3, y: 3 }, "x");
+  test.recieveAttack(3, 3);
+  expect(test.grid).toStrictEqual([
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 2, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  ]);
+});
+
+it("check 4 attacks on ship grid result", () => {
+  let test = new board(rules.size, rules.ships);
+  test.placeShip(0, { x: 3, y: 3 }, "x");
+  test.recieveAttack(3, 3);
+  test.recieveAttack(4, 3);
+  test.recieveAttack(5, 3);
+  test.recieveAttack(6, 3);
+  test.recieveAttack(7, 3);
+  expect(test.grid).toStrictEqual([
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 2, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 2, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 2, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 2, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 2, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  ]);
 });

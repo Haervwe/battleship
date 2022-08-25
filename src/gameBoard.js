@@ -3,6 +3,7 @@ const rules = require("./rules");
 class board {
   #grid;
   #boats;
+  #positions;
   constructor(size, boats) {
     if (size < 1 || !Array.isArray(boats)) {
       return;
@@ -20,11 +21,15 @@ class board {
     })();
     this.#boats = (() => {
       let array = [];
-      boats.forEach((boat) => {
-        array.push({ ship: new ship(boat), position: null });
+      boats.forEach((boat, i) => {
+        array.push({
+          ship: new ship(boat),
+          placed: false,
+        });
       });
       return array;
     })();
+    this.#positions = [];
   }
   get grid() {
     return this.#grid;
@@ -32,8 +37,11 @@ class board {
   get boats() {
     return this.#boats;
   }
+  get positions() {
+    return this.#positions;
+  }
   placeShip(index, pos, dir) {
-    if (this.#boats[index].position != null) {
+    if (this.#boats[index].placed != false) {
       return "Ship already placed";
     }
     if (dir == "y") {
@@ -52,11 +60,13 @@ class board {
         }
         for (let i = pos.y; i < pos.y + boat.size; i++) {
           this.#grid[pos.x][i] = 1;
+          this.#positions.push({
+            cords: { x: pos.x, y: i },
+            shipIndex: index,
+            shipAtackVector: i - pos.y,
+          });
         }
-        this.#boats[index].position = {
-          init: { x: pos.x, y: pos.y },
-          end: { x: pos.x, y: pos.y + boat.size - 1 },
-        };
+        this.#boats[index].placed = true;
       }
     }
     if (dir == "x") {
@@ -75,11 +85,32 @@ class board {
         }
         for (let i = pos.x; i < pos.x + boat.size; i++) {
           this.#grid[i][pos.y] = 1;
+          this.#positions.push({
+            cords: { x: i, y: pos.y },
+            shipIndex: index,
+            shipAtackVector: i - pos.x,
+          });
         }
-        this.#boats[index].position = {
-          init: { x: pos.x, y: pos.y },
-          end: { x: pos.x + boat.size - 1, y: pos.y },
-        };
+        this.#boats[index].placed = true;
+      }
+    }
+  }
+  recieveAttack(x, y) {
+    if (x < 0 || x > 9 || y < 0 || y > 9) {
+      return "Atack out of range";
+    }
+    if (this.#grid[x][y] == 2 || this.#grid[x][y] == 3) {
+      return "Attack already made";
+    }
+    if (this.#grid[x][y] == 0) {
+      this.#grid[x][y] = 3;
+      return;
+    }
+    for (let i = 0; i < this.#positions.length; i++) {
+      if (x == this.#positions[i].cords.x && y == this.#positions[i].cords.y) {
+        this.#grid[x][y] = 2;
+        let boat = this.#boats[this.#positions[i].shipIndex].ship;
+        boat.shot(this.#boats[this.#positions[i].shipAtackVector]);
       }
     }
   }
