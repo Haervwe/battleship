@@ -217,7 +217,7 @@ it("check attack on ship grid result", () => {
   ]);
 });
 
-it("check 4 attacks on ship grid result", () => {
+it("check 5 attacks on ship grid result", () => {
   let test = new board(rules.size, rules.ships);
   test.placeShip(0, { x: 3, y: 3 }, "x");
   test.recieveAttack(3, 3);
@@ -239,7 +239,7 @@ it("check 4 attacks on ship grid result", () => {
   ]);
 });
 
-it("check 4 attacks on ship ship result", () => {
+it("check 5 attacks on ship ship result", () => {
   let test = new board(rules.size, rules.ships);
   test.placeShip(0, { x: 3, y: 3 }, "x");
   test.recieveAttack(3, 3);
@@ -312,6 +312,7 @@ it("check allShipsPlaced fn with all ship placed", () => {
   test.placeShip(4, { x: 9, y: 8 }, "y");
   expect(test.allShipsPlaced()).toBe(true);
 });
+
 it("check allShipsPlaced fn with all but one ship placed", () => {
   let test = new board(rules.size, rules.ships);
   test.placeShip(0, { x: 3, y: 3 }, "x");
