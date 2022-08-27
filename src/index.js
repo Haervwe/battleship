@@ -1,7 +1,10 @@
 let game = require("./gameLogic");
+let aiPlayer = require("./aiPlayer");
+import rules from "./rules";
 import "./style.scss";
 let main = document.getElementById("main");
 let currentGame;
+let aiPlay;
 
 function createElementClass(className, type = "div") {
   let div = document.createElement(type);
@@ -67,13 +70,14 @@ function nameForm(type) {
       setTimeout(() => {
         main.removeChild(playerNames);
         currentGame = new game("ai", form.player1name.value);
+        aiPlay = new aiPlayer(rules.size, currentGame.player2);
+        showGame();
       }, 300);
     });
     form.appendChild(label);
     form.appendChild(player1name);
     form.appendChild(playButton);
     main.appendChild(form);
-    showAiGame();
     return;
   }
   let label2 = document.createElement("label");
@@ -95,7 +99,7 @@ function nameForm(type) {
         form.player1name.value,
         form.player2name.value
       );
-      showHumanGame();
+      showGame();
     }, 300);
   });
   form.appendChild(label);
@@ -106,24 +110,79 @@ function nameForm(type) {
   main.appendChild(form);
 }
 
-function showAiGame() {}
+function showGame() {
+  let gameContainer = createElementId("gameContainer");
+  let player1Container = createElementId("player1Container");
+  console.log(currentGame.player1.board.grid);
+  let player1Board = renderBoard(
+    currentGame.player1.board.grid,
+    "player1board",
+    false
+  );
+  let player2Container = createElementId("player2Container");
+  let player2Board = renderBoard(
+    currentGame.player2.board.grid,
+    "player2Board",
+    true
+  );
+  player1Container.appendChild(player1Board);
+  player2Container.appendChild(player2Board);
+  gameContainer.appendChild(player1Container);
+  gameContainer.appendChild(player2Container);
+  main.appendChild(gameContainer);
+}
 
-function showHumanGame() {}
+function nextTurn(x, y, type) {
+  if (
+    currentGame.player1.board.allShipsPlaced() == false ||
+    currentGame.player2.board.allShipsPlaced() == false
+  ) {
+    return;
+  }
+  if (type == "ai") {
+    currentGame.player1.turn(x, y);
+    renderBoard(currentGame.player1.board.grid, "player1board", false);
+    renderBoard(currentGame.player2.board.grid, "player2Board", true);
+    return;
+  }
+  currentGame.currentPlayer.turn(x, y);
+}
 
-function renderBoard(boardArray) {
-  let board = document.getElementById("board");
+function renderBoard(boardArray, id, hidden) {
+  let board = document.getElementById(id);
   if (board == undefined) {
-    board = createElementId("board");
+    board = createElementId(id);
   }
   board.innerHtml = "";
   for (let i = 0; i < boardArray.length; i++) {
-    let row = createElementClass(`row`);
     for (let j = 0; j < boardArray[i].length; j++) {
-      let square = createElementClass(`square x${i}y${j}`);
-      row.appendChild(square);
+      let square = document.createElement("div");
+      if (hidden == true) {
+        if (boardArray[i][j] < 1) {
+          square.className = `square x${i}y${j} hidden`;
+        } else if (boardArray[i][j] == 2) {
+          square.className = `square x${i}y${j} hiddenHitWater`;
+        } else if (boardArray[i][j] == 3) {
+          square.className = `square x${i}y${j} hiddenHitBoat`;
+        }
+        square.addEventListener("click", () => {
+          nextTurn(i, j, currentGame.type);
+        });
+      } else {
+        if (boardArray[i][j] == 0) {
+          square.className = `square x${i}y${j} water`;
+        } else if (boardArray[i][j] == 1) {
+          square.className = `square x${i}y${j} ship`;
+        } else if (boardArray[i][j] == 2) {
+          square.className = `square x${i}y${j} HitWater `;
+        } else if (boardArray[i][j] == 3) {
+          square.className = `square x${i}y${j} HitShip `;
+        }
+      }
+      board.appendChild(square);
     }
-    board.appendChild(row);
   }
   return board;
 }
+
 selectGameMode();

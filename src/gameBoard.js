@@ -1,5 +1,4 @@
 let ship = require("./ships");
-const rules = require("./rules");
 class board {
   #grid;
   #boats;

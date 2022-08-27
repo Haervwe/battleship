@@ -30,6 +30,9 @@ class game {
   get player2() {
     return this.#player2;
   }
+  get currentPlayer() {
+    return this.#currentPlayer;
+  }
   get player1name() {
     return this.#player1.name;
   }
