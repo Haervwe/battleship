@@ -70,7 +70,11 @@ function nameForm(type) {
       setTimeout(() => {
         main.removeChild(playerNames);
         currentGame = new game("ai", form.player1name.value);
-        aiPlay = new aiPlayer(rules.size, currentGame.player2);
+        aiPlay = new aiPlayer(
+          rules.size,
+          currentGame.player2,
+          currentGame.player1
+        );
         showGame();
       }, 300);
     });
@@ -140,9 +144,19 @@ function nextTurn(x, y, type) {
     return;
   }
   if (type == "ai") {
-    currentGame.player1.turn(x, y);
-    renderBoard(currentGame.player1.board.grid, "player1board", false);
+    let playermove = currentGame.player1.turn(x, y);
+    if (playermove != undefined) {
+      return;
+    }
     renderBoard(currentGame.player2.board.grid, "player2Board", true);
+    let aiMove = aiPlay.play();
+    let result = currentGame.player2.turn(aiMove.x, aiMove.y);
+    while (result != undefined) {
+      aiMove = aiPlay.play();
+      result = currentGame.player2.turn(aiMove.x, aiMove.y);
+    }
+    renderBoard(currentGame.player1.board.grid, "player1board", false);
+
     return;
   }
   currentGame.currentPlayer.turn(x, y);
