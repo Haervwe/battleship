@@ -75,6 +75,7 @@ function nameForm(type) {
           currentGame.player2,
           currentGame.player1
         );
+        aiPlay.placeShips();
         showGame();
       }, 300);
     });
@@ -117,7 +118,6 @@ function nameForm(type) {
 function showGame() {
   let gameContainer = createElementId("gameContainer");
   let player1Container = createElementId("player1Container");
-  console.log(currentGame.player1.board.grid);
   let player1Board = renderBoard(
     currentGame.player1.board.grid,
     "player1board",

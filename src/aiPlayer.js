@@ -1,5 +1,4 @@
-const { size } = require("./rules");
-let rules = require("./rules");
+const ship = require("./ships");
 
 class aiPlayer {
   #grid;
@@ -7,6 +6,7 @@ class aiPlayer {
   #player;
   #oponent;
   #moveQueue;
+  #prioMoves;
   constructor(size, player, oponent) {
     this.#grid = (() => {
       let newGrid = [];
@@ -22,31 +22,52 @@ class aiPlayer {
     this.#lastMoves = [];
     this.#player = player;
     this.#oponent = oponent;
-    this.moveQueue = [];
+    this.#moveQueue = (() => {
+      let initMoves = [];
+      for (let i = size - 1; i < size; i++) {
+        let x = i;
+        for (let j = Math.floor(size / 2); j < Math.floor(size / 2); j++) {
+          let y = j;
+          if (x & (2 == 0)) {
+            initMoves.push({ x: x, y: y * 2 });
+          } else {
+          }
+          initMoves.push({ x: x, y: y * 2 + 1 });
+        }
+      }
+      return initMoves;
+    })();
+    this.#prioMoves = [];
   }
-  #newAttackVector() {
-    let x = Math.floor(Math.random() * (this.#grid.length - 1));
-    let y = Math.floor(Math.random() * (this.#grid.length - 1));
+  placeShips() {
+    let dir = ["x", "y"];
+    for (let i = 0; i < this.#player.board.boats.length; i++) {
+      while (this.#player.board.boats[i].placed == false) {
+        let x = Math.floor(Math.random() * this.#grid.length);
+        let y = Math.floor(Math.random() * this.#grid.length);
+        let z = Math.floor(Math.random() * 2);
+        this.#player.board.placeShip(i, { x: x, y: y }, dir[z]);
+      }
+    }
+  }
+  newAttackVector() {
+    let x = Math.floor(Math.random() * this.#grid.length);
+    let y = Math.floor(Math.random() * this.#grid.length);
     let result = { x: 0, y: 0 };
+    if (this.#prioMoves.length != 0) {
+      result = this.#prioMoves[0];
+      this.#prioMoves.shift();
+      return result;
+    }
     if (this.#moveQueue.length != 0) {
       result = this.#moveQueue[0];
       this.#moveQueue.shift();
       return result;
     }
-    if (x % 2 == 0) {
-      result.y = Math.floor(y / 2) * 2;
-    } else {
-      result.y = Math.floor(y / 2) * 2 + 1;
-    }
-    if (y % 2 == 0) {
-      result.x = Math.floor(y / 2) * 2;
-    } else {
-      result.x = Math.floor(y / 2) * 2 + 1;
-    }
-    return result;
+    return { x: x, y: y };
   }
   play() {
-    let coord = this.#newAttackVector();
+    let coord = this.newAttackVector();
     let check = () => {
       result = true;
       for (let i = 0; i < this.#lastMoves.length; i++) {
@@ -64,54 +85,58 @@ class aiPlayer {
       return result;
     };
     while (check == false) {
-      coord = this.#newAttackVector();
+      console.log(check);
+      coord = this.newAttackVector();
     }
     let result = 0;
     if (this.#oponent.board.grid[coord.x][coord.y] == 1) {
       result = 1;
-      if (this.#lastMoves[this.#lastMoves.length - 1].result == 1) {
-        let xDiference =
-          this.#lastMoves[this.#lastMoves.length - 1].x - coord.x;
-        let yDiference =
-          this.#lastMoves[this.#lastMoves.length - 1].y - coord.y;
-        if (xDiference == 0) {
-          if (yDiference < 0) {
-            this.#moveQueue.push({ x: coord.x, y: coord.y + 1 });
-          } else {
-            this.#moveQueue.push({ x: coord.x, y: coord.y - 1 });
+      if (this.#lastMoves.length > 1) {
+        if (this.#lastMoves[this.#lastMoves.length - 1].result == 1) {
+          let xDiference =
+            this.#lastMoves[this.#lastMoves.length - 1].x - coord.x;
+          let yDiference =
+            this.#lastMoves[this.#lastMoves.length - 1].y - coord.y;
+          if (xDiference == 0) {
+            if (yDiference < 0) {
+              this.#prioMoves.push({ x: coord.x, y: coord.y - 1 });
+            } else {
+              this.#prioMoves.push({ x: coord.x, y: coord.y + 1 });
+            }
           }
-        }
-        if (yDiference == 0) {
-          if (xDiference < 0) {
-            this.#moveQueue.push({ x: coord.x + 1, y: coord.y });
-          } else {
-            this.#moveQueue.push({ x: coord.x - 1, y: coord.y });
+          if (yDiference == 0) {
+            if (xDiference < 0) {
+              this.#prioMoves.push({ x: coord.x - 1, y: coord.y });
+            } else {
+              this.#prioMoves.push({ x: coord.x + 1, y: coord.y });
+            }
           }
         }
       } else {
-        let index = this.#moveQueue.length;
+        let index = this.#prioMoves.length;
         switch (index) {
           case 0:
-            if (this.#lastMoves[this.#lastMoves.length - 4].result == 1) {
-              this.#moveQueue.push({ x: coord.x, y: coord.y - 1 });
+            if (this.#prioMoves.length > 4) {
+              if (this.#prioMoves[this.#prioMoves.length - 4].result == 1) {
+                this.#prioMoves.push({ x: coord.x, y: coord.y - 1 });
+              }
             } else {
-              this.moveQueue.push(
+              this.#prioMoves.push(
                 { x: coord.x + 1, y: coord.y },
                 { x: coord.x - 1, y: coord.y },
                 { x: coord.x, y: coord.y + 1 },
                 { x: coord.x, y: coord.y - 1 }
               );
             }
-
             break;
           case 1:
-            this.moveQueue.push({ x: coord.x, y: coord.y + 1 });
+            this.#prioMoves.push({ x: coord.x, y: coord.y + 1 });
             break;
           case 2:
-            this.moveQueue.push({ x: coord.x - 1, y: coord.y });
+            this.#prioMoves.push({ x: coord.x - 1, y: coord.y });
             break;
           case 3:
-            this.moveQueue.push({ x: coord.x + 1, y: coord.y });
+            this.#prioMoves.push({ x: coord.x + 1, y: coord.y });
             break;
           default:
             break;

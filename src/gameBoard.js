@@ -55,11 +55,11 @@ class board {
     if (dir == "y") {
       let boat = this.boats[index].ship;
       if (
-        pos.y + boat.size - 1 < 10 &&
+        pos.y + boat.size - 1 < this.#grid.length &&
         pos.x >= 0 &&
         pos.y >= 0 &&
-        pos.x < 10 &&
-        pos.y < 10
+        pos.x < this.#grid.length &&
+        pos.y < this.#grid.length
       ) {
         for (let i = pos.y; i < pos.y + boat.size; i++) {
           if (this.#grid[pos.x][i] == 1) {

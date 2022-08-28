@@ -50,7 +50,7 @@ class game {
       return "All ships must been placed before an attack";
     }
     if (this.#winner != null) {
-      return "game alradey finished";
+      return "game alreaey finished";
     }
     let result = this.#defender.board.recieveAttack(x, y);
     if (result != undefined) {
