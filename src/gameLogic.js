@@ -9,11 +9,19 @@ class game {
   #winner;
   constructor(type, player1, player2 = "") {
     this.#type = type;
-    this.#player1 = new player(player1);
+    this.#player1 = (() => {
+      if (player1 == "") {
+        return new player("Player 1");
+      }
+      return new player(player1);
+    })();
     this.#player2 = (() => {
       if (this.type == "ai") {
         return new player("AI");
       } else {
+        if (player1 == "") {
+          return new player("Player 2");
+        }
         return new player(player2);
       }
     })();

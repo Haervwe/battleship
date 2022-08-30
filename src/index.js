@@ -1,6 +1,7 @@
 let game = require("./gameLogic");
 let aiPlayer = require("./aiPlayer");
 import rules from "./rules";
+import ship from "./ships";
 import "./style.scss";
 let main = document.getElementById("main");
 let currentGame;
@@ -44,6 +45,15 @@ function selectGameMode() {
   gameTypeSelector.appendChild(aiButton);
   gameTypeSelector.appendChild(vsButton);
   main.appendChild(gameTypeSelector);
+}
+
+function createDock() {
+  let dock = createElementClass("dock");
+  for (let i = 0; i < rules.ships.length; i++) {
+    let ship = createElementClass(`dockedShip size${rules.ships[i]}`);
+    dock.appendChild(ship);
+  }
+  return dock;
 }
 
 function nameForm(type) {
@@ -129,7 +139,9 @@ function showGame() {
     "player2Board",
     true
   );
+  player1Container.appendChild(createDock());
   player1Container.appendChild(player1Board);
+  player2Container.appendChild(createDock());
   player2Container.appendChild(player2Board);
   gameContainer.appendChild(player1Container);
   gameContainer.appendChild(player2Container);
