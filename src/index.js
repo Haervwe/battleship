@@ -229,4 +229,21 @@ function renderBoard(player, id, hidden) {
   return board;
 }
 
+function renderHeader() {
+  let header = createElementId("header", "div");
+  let headerText = createElementId("headerText", "h1");
+  headerText.innerText = "BATTLESHIP";
+  header.appendChild(headerText);
+  main.appendChild(header);
+}
+
+function renderFooter() {
+  let footer = createElementId("footer", "div");
+  let footerText = createElementId("footerrText", "h3");
+  footerText.innerText = "Made by Haervwe";
+  footer.appendChild(footerText);
+  main.appendChild(footer);
+}
+renderHeader();
 selectGameMode();
+renderFooter();
