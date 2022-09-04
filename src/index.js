@@ -56,6 +56,7 @@ function createDock() {
     ship.addEventListener("dragstart", (e) => {
       let shipElement = JSON.stringify({ id: ship.id, index: i });
       e.dataTransfer.setData("text/html", shipElement);
+      console.log(e.dataTransfer.getData("text/html"));
     });
     dock.appendChild(ship);
   }
@@ -136,7 +137,11 @@ function showGame() {
   let player1Container = createElementId("player1Container");
   let player1Board = renderBoard(currentGame.player1, "player1board", false);
   let player2Container = createElementId("player2Container");
+  player2Container.className = "playerContainer";
+  player1Container.className = "playerContainer";
   let player2Board = renderBoard(currentGame.player2, "player2Board", true);
+  player1Board.className = "playerBoard";
+  player2Board.className = "playerBoard";
   player1Container.appendChild(createDock());
   player1Container.appendChild(player1Board);
   if (currentGame.type == "ai") {
@@ -149,6 +154,7 @@ function showGame() {
   gameContainer.appendChild(player2Container);
   let rotateButton = document.createElement("button");
   rotateButton.innerHTML = "Rotate Ship";
+  rotateButton.id = "rotateShipButton";
   rotateButton.addEventListener("click", () => {
     if (direction == "x") {
       direction == "y";
@@ -207,14 +213,22 @@ function renderBoard(player, id, hidden) {
         square.addEventListener("click", () => {
           nextTurn(i, j, currentGame.type);
         });
-        square.addEventListener("drop", (e) => {
-          e.preventDefault();
-          let shipElement = JSON.parse(e.dataTransfer.getData("text/plain"));
-          player.board.placeShip(shipElement.index, { x: i, y: j }, direction);
-        });
       } else {
         if (boardArray[i][j] == 0) {
           square.className = `square x${i}y${j} water`;
+          square.addEventListener("drop", (e) => {
+            e.preventDefault();
+            let shipElement = JSON.parse(e.dataTransfer.getData("text/html"));
+            let temp = document.getElementById(shipElement.id);
+            temp.parentNode.removeChild(temp);
+            console.log(shipElement);
+            console.log(shipElement.index, { x: i, y: j }, direction);
+            player.board.placeShip(
+              shipElement.index,
+              { x: i, y: j },
+              direction
+            );
+          });
         } else if (boardArray[i][j] == 1) {
           square.className = `square x${i}y${j} ship`;
         } else if (boardArray[i][j] == 2) {
@@ -244,6 +258,9 @@ function renderFooter() {
   footer.appendChild(footerText);
   main.appendChild(footer);
 }
+
+//init
+
 renderHeader();
 selectGameMode();
 renderFooter();
