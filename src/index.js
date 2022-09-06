@@ -56,7 +56,6 @@ function createDock() {
     ship.addEventListener("dragstart", (e) => {
       let shipElement = JSON.stringify({ id: ship.id, index: i });
       e.dataTransfer.setData("text/html", shipElement);
-      console.log(e.dataTransfer.getData("text/html"));
     });
     dock.appendChild(ship);
   }
@@ -173,20 +172,21 @@ function nextTurn(x, y, type) {
   ) {
     return;
   }
+  let player1Board = document.getElementById("player1Board");
+  let player2Board = document.getElementById("player2Board");
   if (type == "ai") {
     let playermove = currentGame.player1.turn(x, y);
     if (playermove != undefined) {
       return;
     }
-    renderBoard(currentGame.player2.board.grid, "player2Board", true);
+    player2Board = renderBoard(currentGame.player2, "player2Board", true);
     let aiMove = aiPlay.play();
     let result = currentGame.player2.turn(aiMove.x, aiMove.y);
     while (result != undefined) {
       aiMove = aiPlay.play();
       result = currentGame.player2.turn(aiMove.x, aiMove.y);
     }
-    renderBoard(currentGame.player1.board.grid, "player1board", false);
-
+    player1Board = renderBoard(currentGame.player1, "player1board", false);
     return;
   }
   currentGame.currentPlayer.turn(x, y);
@@ -197,8 +197,9 @@ function renderBoard(player, id, hidden) {
   let boardArray = player.board.grid;
   if (board == undefined) {
     board = createElementId(id);
+  } else {
+    board.parentNode.removeChild(board);
   }
-  board.innerHtml = "";
   for (let i = 0; i < boardArray.length; i++) {
     for (let j = 0; j < boardArray[i].length; j++) {
       let square = document.createElement("div");
@@ -216,18 +217,38 @@ function renderBoard(player, id, hidden) {
       } else {
         if (boardArray[i][j] == 0) {
           square.className = `square x${i}y${j} water`;
+          square.addEventListener("dragover", (e) => {
+            e.preventDefault();
+          });
           square.addEventListener("drop", (e) => {
             e.preventDefault();
             let shipElement = JSON.parse(e.dataTransfer.getData("text/html"));
             let temp = document.getElementById(shipElement.id);
             temp.parentNode.removeChild(temp);
-            console.log(shipElement);
-            console.log(shipElement.index, { x: i, y: j }, direction);
-            player.board.placeShip(
+            currentGame.currentPlayer.board.placeShip(
               shipElement.index,
               { x: i, y: j },
               direction
             );
+            if (currentGame.currentPlayer.name == currentGame.player1.name) {
+              let newBoard = renderBoard(
+                currentGame.player1,
+                "player1Board",
+                false
+              );
+              let playerContainerTemp =
+                document.getElementById("player1Container");
+              playerContainerTemp.appendChild(newBoard);
+            } else {
+              let newBoard = renderBoard(
+                currentGame.player2,
+                "player2Board",
+                false
+              );
+              let playerContainerTemp =
+                document.getElementById("player2Container");
+              playerContainerTemp.appendChild(newBoard);
+            }
           });
         } else if (boardArray[i][j] == 1) {
           square.className = `square x${i}y${j} ship`;
