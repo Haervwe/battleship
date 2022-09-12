@@ -134,7 +134,7 @@ function nameForm(type) {
 function showGame() {
   let gameContainer = createElementId("gameContainer");
   let player1Container = createElementId("player1Container");
-  let player1Board = renderBoard(currentGame.player1, "player1board", false);
+  let player1Board = renderBoard(currentGame.player1, "player1Board", false);
   let player2Container = createElementId("player2Container");
   player2Container.className = "playerContainer";
   player1Container.className = "playerContainer";
@@ -175,18 +175,18 @@ function nextTurn(x, y, type) {
   let player1Board = document.getElementById("player1Board");
   let player2Board = document.getElementById("player2Board");
   if (type == "ai") {
-    let playermove = currentGame.player1.turn(x, y);
+    let playermove = currentGame.turn(x, y);
     if (playermove != undefined) {
       return;
     }
     player2Board = renderBoard(currentGame.player2, "player2Board", true);
     let aiMove = aiPlay.play();
-    let result = currentGame.player2.turn(aiMove.x, aiMove.y);
+    let result = currentGame.turn(aiMove.x, aiMove.y);
     while (result != undefined) {
       aiMove = aiPlay.play();
-      result = currentGame.player2.turn(aiMove.x, aiMove.y);
+      result = currentGame.turn(aiMove.x, aiMove.y);
     }
-    player1Board = renderBoard(currentGame.player1, "player1board", false);
+    player1Board = renderBoard(currentGame.player1, "player1Board", false);
     return;
   }
   currentGame.currentPlayer.turn(x, y);
@@ -198,7 +198,8 @@ function renderBoard(player, id, hidden) {
   if (board == undefined) {
     board = createElementId(id);
   } else {
-    board.parentNode.removeChild(board);
+    console.log(board);
+    board.innerHTML = "";
   }
   for (let i = 0; i < boardArray.length; i++) {
     for (let j = 0; j < boardArray[i].length; j++) {
@@ -236,8 +237,11 @@ function renderBoard(player, id, hidden) {
                 "player1Board",
                 false
               );
+              newBoard.className = "playerBoard";
               let playerContainerTemp =
                 document.getElementById("player1Container");
+              //let oldBoard = document.getElementById("player1Board");
+              //playerContainerTemp.removeChild(oldBoard);
               playerContainerTemp.appendChild(newBoard);
             } else {
               let newBoard = renderBoard(
