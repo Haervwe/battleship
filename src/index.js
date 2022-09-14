@@ -5,7 +5,7 @@ import "./style.scss";
 let main = document.getElementById("main");
 let currentGame;
 let aiPlay;
-let direction = "x";
+let direction = "y";
 
 function createElementClass(className, type = "div") {
   let div = document.createElement(type);
@@ -156,9 +156,9 @@ function showGame() {
   rotateButton.id = "rotateShipButton";
   rotateButton.addEventListener("click", () => {
     if (direction == "x") {
-      direction == "y";
+      direction = "y";
     } else {
-      direction == "x";
+      direction = "x";
     }
   });
   gameContainer.appendChild(rotateButton);
@@ -208,9 +208,9 @@ function renderBoard(player, id, hidden) {
         if (boardArray[i][j] <= 1) {
           square.className = `square x${i}y${j} hidden`;
         } else if (boardArray[i][j] == 2) {
-          square.className = `square x${i}y${j} hiddenHitWater`;
-        } else if (boardArray[i][j] == 3) {
           square.className = `square x${i}y${j} hiddenHitBoat`;
+        } else if (boardArray[i][j] == 3) {
+          square.className = `square x${i}y${j} hiddenHitWater`;
         }
         square.addEventListener("click", () => {
           nextTurn(i, j, currentGame.type);
@@ -240,8 +240,6 @@ function renderBoard(player, id, hidden) {
               newBoard.className = "playerBoard";
               let playerContainerTemp =
                 document.getElementById("player1Container");
-              //let oldBoard = document.getElementById("player1Board");
-              //playerContainerTemp.removeChild(oldBoard);
               playerContainerTemp.appendChild(newBoard);
             } else {
               let newBoard = renderBoard(
@@ -257,9 +255,9 @@ function renderBoard(player, id, hidden) {
         } else if (boardArray[i][j] == 1) {
           square.className = `square x${i}y${j} ship`;
         } else if (boardArray[i][j] == 2) {
-          square.className = `square x${i}y${j} HitWater `;
+          square.className = `square x${i}y${j} hitShip `;
         } else if (boardArray[i][j] == 3) {
-          square.className = `square x${i}y${j} HitShip `;
+          square.className = `square x${i}y${j} hitWater `;
         }
       }
       board.appendChild(square);

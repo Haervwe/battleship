@@ -74,6 +74,22 @@ body {
       .water {
         background-color: aqua;
       }
+
+      .hitShip {
+        background-color: black;
+      }
+      .hitWater {
+        background-color: aquamarine;
+      }
+      .hidden {
+        background-color: green;
+      }
+      .hiddenHitWater {
+        background-color: aquamarine;
+      }
+      .hiddenHitBoat {
+        background-color: black;
+      }
     }
   }
   #player1Container {
