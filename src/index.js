@@ -161,6 +161,31 @@ function showGame() {
       direction = "x";
     }
   });
+  if (currentGame.type != "ai") {
+    let nextTurnButton = document.createElement("button");
+    nextTurnButton.innerHTML = "Next Turn";
+    nextTurnButton.id = "nextTurnButton";
+    nextTurnButton.addEventListener("click", () => {
+      console.log(currentGame.currentPlayer.board.allShipsPlaced());
+      if (currentGame.currentPlayer.board.allShipsPlaced() == true) {
+        console.log("asd");
+        if (currentGame.currentPlayer == currentGame.player1) {
+          player1Board = renderBoard(currentGame.player1, "player1Board", true);
+          player2Board = renderBoard(
+            currentGame.player2,
+            "player2Board",
+            false
+          );
+          currentGame.nextTurn();
+        } else {
+          player1Board = renderBoard(currentGame.player1, "player1Board", true);
+          player2Board = renderBoard(currentGame.player2, "player2Board", true);
+          currentGame.nextTurn();
+        }
+      }
+    });
+    gameContainer.appendChild(nextTurnButton);
+  }
   gameContainer.appendChild(rotateButton);
   main.appendChild(gameContainer);
 }

@@ -50,6 +50,14 @@ class game {
   get winner() {
     return this.#winner;
   }
+  nextPlayer() {
+    if (this.#currentPlayer == this.#player1) {
+      this.#currentPlayer = this.#player2;
+    } else {
+      this.#currentPlayer = this.#player1;
+    }
+  }
+
   turn(x = 0, y = 0) {
     if (
       this.#player1.board.allShipsPlaced() == false ||
