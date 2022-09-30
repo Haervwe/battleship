@@ -169,6 +169,7 @@ function showGame() {
       console.log(currentGame.currentPlayer.board.allShipsPlaced());
       if (currentGame.currentPlayer.board.allShipsPlaced() == true) {
         console.log("asd");
+        console.log(currentGame.currentPlayer);
         if (currentGame.currentPlayer == currentGame.player1) {
           player1Board = renderBoard(currentGame.player1, "player1Board", true);
           player2Board = renderBoard(
@@ -176,11 +177,11 @@ function showGame() {
             "player2Board",
             false
           );
-          currentGame.nextTurn();
+          currentGame.nextPlayer();
         } else {
           player1Board = renderBoard(currentGame.player1, "player1Board", true);
           player2Board = renderBoard(currentGame.player2, "player2Board", true);
-          currentGame.nextTurn();
+          currentGame.nextPlayer();
         }
       }
     });
@@ -213,6 +214,13 @@ function nextTurn(x, y, type) {
     }
     player1Board = renderBoard(currentGame.player1, "player1Board", false);
     return;
+  } else {
+    let playermove = currentGame.turn(x, y);
+    if (playermove != undefined) {
+      return;
+    }
+    player1Board = renderBoard(currentGame.player1, "player1Board", true);
+    player2Board = renderBoard(currentGame.player2, "player2Board", true);
   }
   currentGame.currentPlayer.turn(x, y);
 }
@@ -256,7 +264,7 @@ function renderBoard(player, id, hidden) {
               { x: i, y: j },
               direction
             );
-            if (currentGame.currentPlayer.name == currentGame.player1.name) {
+            if (currentGame.currentPlayer == currentGame.player1) {
               let newBoard = renderBoard(
                 currentGame.player1,
                 "player1Board",
@@ -272,6 +280,7 @@ function renderBoard(player, id, hidden) {
                 "player2Board",
                 false
               );
+              newBoard.className = "playerBoard";
               let playerContainerTemp =
                 document.getElementById("player2Container");
               playerContainerTemp.appendChild(newBoard);
