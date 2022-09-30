@@ -168,8 +168,6 @@ function showGame() {
     nextTurnButton.addEventListener("click", () => {
       console.log(currentGame.currentPlayer.board.allShipsPlaced());
       if (currentGame.currentPlayer.board.allShipsPlaced() == true) {
-        console.log("asd");
-        console.log(currentGame.currentPlayer);
         if (currentGame.currentPlayer == currentGame.player1) {
           player1Board = renderBoard(currentGame.player1, "player1Board", true);
           player2Board = renderBoard(
@@ -222,7 +220,6 @@ function nextTurn(x, y, type) {
     player1Board = renderBoard(currentGame.player1, "player1Board", true);
     player2Board = renderBoard(currentGame.player2, "player2Board", true);
   }
-  currentGame.currentPlayer.turn(x, y);
 }
 
 function renderBoard(player, id, hidden) {
@@ -246,7 +243,18 @@ function renderBoard(player, id, hidden) {
           square.className = `square x${i}y${j} hiddenHitWater`;
         }
         square.addEventListener("click", () => {
-          nextTurn(i, j, currentGame.type);
+          if (
+            id == "player1Board" &&
+            currentGame.currentPlayer == currentGame.player2
+          ) {
+            nextTurn(i, j, currentGame.type);
+          }
+          if (
+            id == "player2Board" &&
+            currentGame.currentPlayer == currentGame.player1
+          ) {
+            nextTurn(i, j, currentGame.type);
+          }
         });
       } else {
         if (boardArray[i][j] == 0) {
@@ -258,12 +266,15 @@ function renderBoard(player, id, hidden) {
             e.preventDefault();
             let shipElement = JSON.parse(e.dataTransfer.getData("text/html"));
             let temp = document.getElementById(shipElement.id);
-            temp.parentNode.removeChild(temp);
-            currentGame.currentPlayer.board.placeShip(
+            let placed = currentGame.currentPlayer.board.placeShip(
               shipElement.index,
               { x: i, y: j },
               direction
             );
+            console.log(placed);
+            if (typeof placed != "string") {
+              temp.parentNode.removeChild(temp);
+            }
             if (currentGame.currentPlayer == currentGame.player1) {
               let newBoard = renderBoard(
                 currentGame.player1,

@@ -75,6 +75,8 @@ class board {
           });
         }
         this.#boats[index].placed = true;
+      } else {
+        return "boat outside the grid";
       }
     }
     if (dir == "x") {
