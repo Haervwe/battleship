@@ -180,6 +180,7 @@ function showGame() {
           player1Board = renderBoard(currentGame.player1, "player1Board", true);
           player2Board = renderBoard(currentGame.player2, "player2Board", true);
           currentGame.nextPlayer();
+          nextTurnButton.parentElement.removeChild(nextTurnButton);
         }
       }
     });
@@ -330,7 +331,7 @@ function renderHeader() {
 
 function renderFooter() {
   let footer = createElementId("footer", "div");
-  let footerText = createElementId("footerrText", "h3");
+  let footerText = createElementId("footerText", "h3");
   footerText.innerText = "Made by Haervwe";
   footer.appendChild(footerText);
   main.appendChild(footer);
@@ -338,10 +339,21 @@ function renderFooter() {
 
 function renderWinner(player) {
   let gameContainer = document.getElementById("gameContainer");
-  gameContainer.innerHTML = "";
-  let winner = createElementId("winnerDiv");
+  gameContainer.parentElement.removeChild(gameContainer);
+  let winnerDiv = createElementId("winnerDiv");
+  let winner = createElementId("winner");
   winner.innerText = `${player} wins the game`;
-  gameContainer.appendChild(winner);
+  let restartBtn = document.createElement("button");
+  restartBtn.id = "restartBtn";
+  restartBtn.innerText = "Restart Game";
+  restartBtn.addEventListener("click", () => {
+    let winnerDiv = document.getElementById("winnerDiv");
+    winnerDiv.parentElement.removeChild(winnerDiv);
+    selectGameMode();
+  });
+  winnerDiv.appendChild(winner);
+  winnerDiv.appendChild(restartBtn);
+  main.appendChild(winnerDiv);
 }
 
 //init
