@@ -66,7 +66,7 @@ class game {
       return "All ships must been placed before an attack";
     }
     if (this.#winner != null) {
-      return "game alreaey finished";
+      return "game already finished";
     }
     let result = this.#defender.board.recieveAttack(x, y);
     if (result != undefined) {
@@ -74,6 +74,7 @@ class game {
     }
     if (this.#defender.board.isGameOver() == true) {
       this.#winner = `${this.#currentPlayer.name} WINS`;
+      return true;
     }
     let temp = this.#currentPlayer;
     this.#currentPlayer = this.#defender;

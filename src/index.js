@@ -201,6 +201,9 @@ function nextTurn(x, y, type) {
   if (type == "ai") {
     let playermove = currentGame.turn(x, y);
     if (playermove != undefined) {
+      if (playermove == true) {
+        renderWinner(currentGame.player1.name);
+      }
       return;
     }
     player2Board = renderBoard(currentGame.player2, "player2Board", true);
@@ -209,12 +212,18 @@ function nextTurn(x, y, type) {
     while (result != undefined) {
       aiMove = aiPlay.play();
       result = currentGame.turn(aiMove.x, aiMove.y);
+      if (playermove == true) {
+        renderWinner(currentGame.player1.name);
+      }
     }
     player1Board = renderBoard(currentGame.player1, "player1Board", false);
     return;
   } else {
     let playermove = currentGame.turn(x, y);
     if (playermove != undefined) {
+      if (playermove == true) {
+        renderWinner(currentGame.currentPlayer.name);
+      }
       return;
     }
     player1Board = renderBoard(currentGame.player1, "player1Board", true);
@@ -325,6 +334,14 @@ function renderFooter() {
   footerText.innerText = "Made by Haervwe";
   footer.appendChild(footerText);
   main.appendChild(footer);
+}
+
+function renderWinner(player) {
+  let gameContainer = document.getElementById("gameContainer");
+  gameContainer.innerHTML = "";
+  let winner = createElementId("winnerDiv");
+  winner.innerText = `${player} wins the game`;
+  gameContainer.appendChild(winner);
 }
 
 //init
