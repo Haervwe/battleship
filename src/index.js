@@ -166,7 +166,6 @@ function showGame() {
     nextTurnButton.innerHTML = "Next Turn";
     nextTurnButton.id = "nextTurnButton";
     nextTurnButton.addEventListener("click", () => {
-      console.log(currentGame.currentPlayer.board.allShipsPlaced());
       if (currentGame.currentPlayer.board.allShipsPlaced() == true) {
         if (currentGame.currentPlayer == currentGame.player1) {
           player1Board = renderBoard(currentGame.player1, "player1Board", true);
@@ -238,7 +237,6 @@ function renderBoard(player, id, hidden) {
   if (board == undefined) {
     board = createElementId(id);
   } else {
-    console.log(board);
     board.innerHTML = "";
   }
   for (let i = 0; i < boardArray.length; i++) {
@@ -281,7 +279,6 @@ function renderBoard(player, id, hidden) {
               { x: i, y: j },
               direction
             );
-            console.log(placed);
             if (typeof placed != "string") {
               temp.parentNode.removeChild(temp);
             }

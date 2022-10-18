@@ -10,8 +10,10 @@ it("checks ai player whole function, making two instances play against eachother
   ai2.placeShips();
   console.log(game.player2.board.grid, game.winner);
   let stop = 0;
+  let ai2play;
+  let ai1play;
   while (game.winner == null && stop < 100) {
-    let ai1play = ai1.play();
+    ai1play = ai1.play();
     let test = game.turn(ai1play.x, ai1play.y);
     while (test != undefined) {
       ai1play = ai1.play();
@@ -20,7 +22,8 @@ it("checks ai player whole function, making two instances play against eachother
     if (game.winner != null) {
       break;
     }
-    let ai2play = ai2.play();
+    ai2play = ai2.play();
+    console.log(game.player2.board.grid, game.winner);
     let test2 = game.turn(ai2play.x, ai2play.y);
     while (test2 != undefined) {
       ai2play = ai2.play();
