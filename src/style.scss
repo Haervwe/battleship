@@ -38,6 +38,11 @@ button {
     #c6c6c6
   );
   text-shadow: -1px -1px 5px rgb(255, 255, 255);
+  transition: all 200ms ease-in-out;
+}
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 5px 5px 15px rgb(0, 0, 0);
 }
 
 #main {
@@ -79,7 +84,45 @@ button {
 }
 
 #playerNames {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-auto-rows: 1fr;
+  gap: 10px;
+  label {
+    font-family: "font";
+    background: conic-gradient(
+      #d7d7d7,
+      #c3c3c3,
+      #cccccc,
+      #c6c6c6,
+      #d7d7d7,
+      #c3c3c3,
+      #cccccc,
+      #c6c6c6,
+      #d7d7d7,
+      #c3c3c3,
+      #cccccc,
+      #c6c6c6,
+      #d7d7d7,
+      #c3c3c3,
+      #cccccc,
+      #c6c6c6
+    );
+    margin: 5px;
+    font-size: 1.2fr;
+    padding: 5px;
+    border-radius: 3px;
+  }
+  input {
+    margin: 5px;
+    padding: 5px;
+    background-color: #c3c3c3b0;
+  }
+  button {
+    font-size: 1.5em;
+    width: 50%;
+    justify-self: center;
+  }
 }
 
 #gameContainer {

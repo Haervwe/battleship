@@ -63,6 +63,10 @@ function createDock() {
 }
 
 function nameForm(type) {
+  let playerDiv = document.createElement("div");
+  playerDiv.id = "player1NameContainer";
+  let player2Div = document.createElement("div");
+  player2Div.id = "player2NameContainer";
   let form = document.createElement("form");
   form.id = "playerNames";
   form.method = "get";
@@ -95,15 +99,16 @@ function nameForm(type) {
         showGame();
       }, 300);
     });
-    form.appendChild(label);
-    form.appendChild(player1name);
+    playerDiv.appendChild(label);
+    playerDiv.appendChild(player1name);
+    form.appendChild(playerDiv);
     form.appendChild(playButton);
     main.appendChild(form);
     return;
   }
   let label2 = document.createElement("label");
   label2.for = "player2name";
-  label2.innerText = "Player 2 Mame:";
+  label2.innerText = "Player 2 Name:";
   let player2name = document.createElement("input");
   player2name.id = "player2name";
   player2name.type = "text";
@@ -123,10 +128,12 @@ function nameForm(type) {
       showGame();
     }, 300);
   });
-  form.appendChild(label);
-  form.appendChild(player1name);
-  form.appendChild(label2);
-  form.appendChild(player2name);
+  playerDiv.appendChild(label);
+  playerDiv.appendChild(player1name);
+  form.appendChild(playerDiv);
+  player2Div.appendChild(label2);
+  player2Div.appendChild(player2name);
+  form.appendChild(player2Div);
   form.appendChild(playButton);
   main.appendChild(form);
 }
