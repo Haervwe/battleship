@@ -49,17 +49,27 @@ button:hover {
   display: grid;
   height: 100vh;
   width: 100vw;
-  justify-items: center;
+  justify-content: center;
   align-items: center;
+  grid-template-columns: 1fr;
   grid-template-rows: 1fr 10fr 1fr;
   background-image: url(./img/uk_cruisers_key_art.jpg);
 }
 
 #header {
   grid-row: 1/ 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-family: "font";
   font-size: 1.5em;
+  width: 100%;
+  height: 100%;
+  background-image: url(./img/metal.jpg);
+  background-position: bottom;
   h1 {
+    text-align: center;
+    margin: 0px;
     text-shadow: -1px -1px 5px rgb(255, 255, 255);
   }
 }
@@ -67,8 +77,20 @@ button:hover {
 #footer {
   grid-row: 3/ -1;
   font-size: 1.3rem;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url(./img/metal.jpg),
+    linear-gradient(to bottom, #adb2b6, #abaeb300);
   font-family: "font";
-  text-shadow: -1px -1px 5px rgb(255, 255, 255);
+
+  h3 {
+    text-align: center;
+    margin: 0px;
+    text-shadow: -1px -1px 5px rgb(255, 255, 255);
+  }
 }
 
 #gameTypeSelector {
@@ -77,6 +99,7 @@ button:hover {
   button {
     margin: 25px;
     height: 100%;
+    font-size: 1.3rem;
     width: 8rem;
   }
   align-items: center;
