@@ -1,3 +1,9 @@
+@font-face {
+  font-family: "font";
+  src: url(./gunmetl.ttf);
+  font-weight: 1500;
+  font-style: bold;
+}
 * {
   box-sizing: border-box;
 }
@@ -9,6 +15,31 @@ body {
   overflow: hidden;
 }
 
+button {
+  border-radius: 5px;
+  font-family: "font";
+  border-color: #c3c3c3;
+  background: conic-gradient(
+    #d7d7d7,
+    #c3c3c3,
+    #cccccc,
+    #c6c6c6,
+    #d7d7d7,
+    #c3c3c3,
+    #cccccc,
+    #c6c6c6,
+    #d7d7d7,
+    #c3c3c3,
+    #cccccc,
+    #c6c6c6,
+    #d7d7d7,
+    #c3c3c3,
+    #cccccc,
+    #c6c6c6
+  );
+  text-shadow: -1px -1px 5px rgb(255, 255, 255);
+}
+
 #main {
   display: grid;
   height: 100vh;
@@ -16,18 +47,35 @@ body {
   justify-items: center;
   align-items: center;
   grid-template-rows: 1fr 10fr 1fr;
+  background-image: url(./img/uk_cruisers_key_art.jpg);
 }
 
 #header {
   grid-row: 1/ 2;
+  font-family: "font";
+  font-size: 1.5em;
+  h1 {
+    text-shadow: -1px -1px 5px rgb(255, 255, 255);
+  }
 }
 
 #footer {
   grid-row: 3/ -1;
+  font-size: 1.3rem;
+  font-family: "font";
+  text-shadow: -1px -1px 5px rgb(255, 255, 255);
 }
 
 #gameTypeSelector {
   display: flex;
+  height: 3rem;
+  button {
+    margin: 25px;
+    height: 100%;
+    width: 8rem;
+  }
+  align-items: center;
+  justify-content: center;
 }
 
 #playerNames {
