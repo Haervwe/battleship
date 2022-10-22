@@ -6,6 +6,7 @@ let main = document.getElementById("main");
 let currentGame;
 let aiPlay;
 let direction = "y";
+let tempShipSize;
 
 function createElementClass(className, type = "div") {
   let div = document.createElement(type);
@@ -53,9 +54,28 @@ function createDock(id) {
   for (let i = 0; i < rules.ships.length; i++) {
     let ship = createElementClass(`dockedShip size${rules.ships[i]}`);
     ship.id = `ship${i}`;
+    switch (rules.ships[i]) {
+      case 5:
+        ship.innerText = "A";
+        break;
+      case 4:
+        ship.innerText = "F";
+        break;
+      case 3:
+        ship.innerText = "L";
+        break;
+      case 2:
+        ship.innerText = "O";
+        break;
+    }
     ship.draggable = "true";
     ship.addEventListener("dragstart", (e) => {
-      let shipElement = JSON.stringify({ id: ship.id, index: i });
+      let shipElement = JSON.stringify({
+        id: ship.id,
+        index: i,
+        size: rules.ships[i],
+      });
+      tempShipSize = rules.ships[i];
       e.dataTransfer.setData("text/html", shipElement);
     });
     dock.appendChild(ship);
@@ -278,6 +298,40 @@ function renderBoard(player, id, hidden) {
           square.className = `square x${i}y${j} water`;
           square.addEventListener("dragover", (e) => {
             e.preventDefault();
+            if (direction == "y") {
+              for (let r = 0; r < tempShipSize; r++) {
+                let square = document.querySelector(`.x${i}y${j + r}`);
+                if (square.className == `square x${i}y${j + r} water`) {
+                  square.className = `square x${i}y${j + r} hoverShip`;
+                }
+              }
+            }
+            if (direction == "x") {
+              for (let r = 0; r < tempShipSize; r++) {
+                let square = document.querySelector(`.x${i + r}y${j}`);
+                if (square.className == `square x${i + r}y${j} water`) {
+                  square.className = `square x${i + r}y${j} hoverShip`;
+                }
+              }
+            }
+          });
+          square.addEventListener("dragleave", () => {
+            if (direction == "y") {
+              for (let r = 0; r < tempShipSize; r++) {
+                let square = document.querySelector(`.x${i}y${j + r}`);
+                if (square.className == `square x${i}y${j + r} hoverShip`) {
+                  square.className = `square x${i}y${j + r} water`;
+                }
+              }
+            }
+            if (direction == "x") {
+              for (let r = 0; r < tempShipSize; r++) {
+                let square = document.querySelector(`.x${i + r}y${j}`);
+                if (square.className == `square x${i + r}y${j} hoverShip`) {
+                  square.className = `square x${i + r}y${j} water`;
+                }
+              }
+            }
           });
           square.addEventListener("drop", (e) => {
             e.preventDefault();
@@ -322,7 +376,9 @@ function renderBoard(player, id, hidden) {
             }
             if (currentGame.player2.board.allShipsPlaced() == true) {
               let dock = document.getElementById("player2Dock");
-              dock.parentNode.removeChild(dock);
+              if (dock != undefined) {
+                dock.parentNode.removeChild(dock);
+              }
               if (currentGame.type != "ai") {
                 let button = document.getElementById("rotateShipButton");
                 button.parentNode.removeChild(button);

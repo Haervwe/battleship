@@ -10,6 +10,12 @@
   font-weight: 1000;
   font-style: bold;
 }
+@font-face {
+  font-family: "ships";
+  src: url(./usnavy.ttf);
+  font-weight: 1000;
+  font-style: bold;
+}
 * {
   box-sizing: border-box;
 }
@@ -180,8 +186,39 @@ button:hover {
     .dock {
       border: 3px solid black;
       border-radius: 15px;
-      overflow: hidden;
+      overflow: none;
       display: grid;
+      justify-items: center;
+      align-content: center;
+      grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+      .dockedShip {
+        border: 3px solid black;
+        border-radius: 15px;
+        margin: 10px;
+        display: grid;
+        font-family: "ships";
+        justify-items: center;
+        align-content: center;
+        overflow: hidden;
+        background: conic-gradient(
+          #e6e9bf,
+          #d2b5aa,
+          #cbaea3,
+          #d4b5ab,
+          #e6e9bf,
+          #d2b5aa,
+          #cbaea3,
+          #d4b5ab,
+          #e6e9bf,
+          #d2b5aa,
+          #cbaea3,
+          #d4b5ab,
+          #e6e9bf,
+          #d2b5aa,
+          #cbaea3,
+          #d4b5ab
+        );
+      }
     }
     .playerBoard {
       display: grid;
