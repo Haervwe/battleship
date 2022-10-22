@@ -4,6 +4,12 @@
   font-weight: 1500;
   font-style: bold;
 }
+@font-face {
+  font-family: "disarmer";
+  src: url(./disarmer.ttf);
+  font-weight: 1000;
+  font-style: bold;
+}
 * {
   box-sizing: border-box;
 }
@@ -17,25 +23,26 @@ body {
 
 button {
   border-radius: 5px;
-  font-family: "font";
+  font-size: 0.65rem;
+  font-family: "disarmer";
   border-color: #c3c3c3;
   background: conic-gradient(
-    #d7d7d7,
-    #c3c3c3,
-    #cccccc,
-    #c6c6c6,
-    #d7d7d7,
-    #c3c3c3,
-    #cccccc,
-    #c6c6c6,
-    #d7d7d7,
-    #c3c3c3,
-    #cccccc,
-    #c6c6c6,
-    #d7d7d7,
-    #c3c3c3,
-    #cccccc,
-    #c6c6c6
+    #e6e9bf,
+    #d2b5aa,
+    #cbaea3,
+    #d4b5ab,
+    #e6e9bf,
+    #d2b5aa,
+    #cbaea3,
+    #d4b5ab,
+    #e6e9bf,
+    #d2b5aa,
+    #cbaea3,
+    #d4b5ab,
+    #e6e9bf,
+    #d2b5aa,
+    #cbaea3,
+    #d4b5ab
   );
   text-shadow: -1px -1px 5px rgb(255, 255, 255);
   transition: all 200ms ease-in-out;
@@ -111,25 +118,26 @@ button:hover {
   grid-template-columns: 1fr;
   grid-auto-rows: 1fr;
   gap: 10px;
+  justify-items: center;
   label {
     font-family: "font";
     background: conic-gradient(
-      #d7d7d7,
-      #c3c3c3,
-      #cccccc,
-      #c6c6c6,
-      #d7d7d7,
-      #c3c3c3,
-      #cccccc,
-      #c6c6c6,
-      #d7d7d7,
-      #c3c3c3,
-      #cccccc,
-      #c6c6c6,
-      #d7d7d7,
-      #c3c3c3,
-      #cccccc,
-      #c6c6c6
+      #e6e9bf,
+      #d2b5aa,
+      #cbaea3,
+      #d4b5ab,
+      #e6e9bf,
+      #d2b5aa,
+      #cbaea3,
+      #d4b5ab,
+      #e6e9bf,
+      #d2b5aa,
+      #cbaea3,
+      #d4b5ab,
+      #e6e9bf,
+      #d2b5aa,
+      #cbaea3,
+      #d4b5ab
     );
     margin: 5px;
     font-size: 1.2fr;
@@ -143,7 +151,7 @@ button:hover {
   }
   button {
     font-size: 1.5em;
-    width: 50%;
+    width: 7rem;
     justify-self: center;
   }
 }
@@ -185,29 +193,39 @@ button:hover {
       .square {
         border: 1px solid black;
       }
-      .water {
-        background-color: aqua;
+      .ship {
+        background-color: rgba(0, 0, 0, 0.74);
       }
-
+      .water {
+        background-color: rgba(97, 97, 97, 0.712);
+      }
       .hitShip {
-        background-color: black;
+        background-color: rgba(255, 0, 0, 0.548);
       }
       .hitWater {
-        background-color: aquamarine;
+        background-color: rgba(127, 197, 255, 0.726);
       }
       .hidden {
-        background-color: green;
+        background-color: rgba(133, 133, 133, 0.329);
       }
       .hiddenHitWater {
-        background-color: aquamarine;
+        background-color: rgba(127, 197, 255, 0.726);
       }
       .hiddenHitBoat {
-        background-color: black;
+        background-color: rgba(255, 0, 0, 0.548);
       }
     }
   }
   #player1Container {
     grid-template-columns: 1fr 5fr;
+    .playerBoard {
+      grid-column: 2/3;
+      grid-row: 1/2;
+    }
+    .dock {
+      grid-column: 1/2;
+      grid-row: 1/2;
+    }
   }
   #player2Container {
     grid-template-columns: 5fr 1fr;
@@ -220,8 +238,24 @@ button:hover {
       grid-row: 1/2;
     }
   }
-  #rotateShipButton {
-    grid-row: 2/3;
+  #buttonContainer {
     grid-column: 1/3;
+    grid-row: 2/3;
+    display: flex;
+    justify-content: center;
+    justify-items: center;
+
+    #rotateShipButton {
+      margin-left: 10px;
+      height: 4rem;
+      width: 4rem;
+      border-radius: 100%;
+    }
+    #nextTurnButton {
+      margin-right: 10px;
+      height: 4rem;
+      width: 4rem;
+      border-radius: 100%;
+    }
   }
 }

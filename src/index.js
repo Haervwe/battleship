@@ -47,8 +47,9 @@ function selectGameMode() {
   main.appendChild(gameTypeSelector);
 }
 
-function createDock() {
+function createDock(id) {
   let dock = createElementClass("dock");
+  dock.id = id;
   for (let i = 0; i < rules.ships.length; i++) {
     let ship = createElementClass(`dockedShip size${rules.ships[i]}`);
     ship.id = `ship${i}`;
@@ -148,12 +149,12 @@ function showGame() {
   let player2Board = renderBoard(currentGame.player2, "player2Board", true);
   player1Board.className = "playerBoard";
   player2Board.className = "playerBoard";
-  player1Container.appendChild(createDock());
+  player1Container.appendChild(createDock("player1Dock"));
   player1Container.appendChild(player1Board);
-  if (currentGame.type == "ai") {
-    player2Container.appendChild(createElementClass("dock"));
-  } else {
-    player2Container.appendChild(createDock());
+  let buttonContainer = document.createElement("div");
+  buttonContainer.id = "buttonContainer";
+  if (currentGame.type != "ai") {
+    player2Container.appendChild(createDock("player2Dock"));
   }
   player2Container.appendChild(player2Board);
   gameContainer.appendChild(player1Container);
@@ -190,9 +191,10 @@ function showGame() {
         }
       }
     });
-    gameContainer.appendChild(nextTurnButton);
+    buttonContainer.appendChild(nextTurnButton);
   }
-  gameContainer.appendChild(rotateButton);
+  buttonContainer.appendChild(rotateButton);
+  gameContainer.appendChild(buttonContainer);
   main.appendChild(gameContainer);
 }
 
@@ -299,6 +301,14 @@ function renderBoard(player, id, hidden) {
               let playerContainerTemp =
                 document.getElementById("player1Container");
               playerContainerTemp.appendChild(newBoard);
+              if (currentGame.player1.board.allShipsPlaced() == true) {
+                let dock = document.getElementById("player1Dock");
+                dock.parentNode.removeChild(dock);
+                if (currentGame.type == "ai") {
+                  let button = document.getElementById("rotateShipButton");
+                  button.parentNode.removeChild(button);
+                }
+              }
             } else {
               let newBoard = renderBoard(
                 currentGame.player2,
@@ -309,6 +319,14 @@ function renderBoard(player, id, hidden) {
               let playerContainerTemp =
                 document.getElementById("player2Container");
               playerContainerTemp.appendChild(newBoard);
+            }
+            if (currentGame.player2.board.allShipsPlaced() == true) {
+              let dock = document.getElementById("player2Dock");
+              dock.parentNode.removeChild(dock);
+              if (currentGame.type != "ai") {
+                let button = document.getElementById("rotateShipButton");
+                button.parentNode.removeChild(button);
+              }
             }
           });
         } else if (boardArray[i][j] == 1) {
