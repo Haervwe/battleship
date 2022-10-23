@@ -4,6 +4,7 @@ class aiPlayer {
   #grid;
   #lastMoves;
   #player;
+  #moves;
   #oponent;
   #prioMoves;
   #possibleMoves;
@@ -23,6 +24,20 @@ class aiPlayer {
     this.#player = player;
     this.#oponent = oponent;
     this.#prioMoves = [];
+    this.#moves = (() => {
+      let movesArray = [];
+      for (let i = 0; i < size; i++) {
+        for (let j = 0; j < size; j++) {
+          if (i % 2 == 0 && j % 2 != 0) {
+            movesArray.push({ x: i, y: j });
+          }
+          if (i % 2 != 0 && j % 2 == 0) {
+            movesArray.push({ x: i, y: j });
+          }
+        }
+      }
+      return movesArray;
+    })();
     this.#possibleMoves = (() => {
       let movesArray = [];
       for (let i = 0; i < size; i++) {
@@ -46,20 +61,82 @@ class aiPlayer {
   }
 
   newAttackVector() {
+    console.log(this.#moves);
     if (this.#player.board.isGameOver() == true) {
       return "gameOver";
     }
-    let i = Math.floor(Math.random() * this.#possibleMoves.length);
+    let i;
+    if (this.#moves.length != 0) {
+      let temp = Math.floor(Math.random() * this.#moves.length);
+      if (temp == this.#moves.length) {
+        temp = temp - 1;
+      }
+      i = (() => {
+        for (let j = 0; j < this.#possibleMoves.length; j++) {
+          if (
+            this.#possibleMoves[j].x == this.#moves[temp].x &&
+            this.#possibleMoves[j].y == this.#moves[temp].y
+          ) {
+            return j;
+          }
+        }
+      })();
+      if (i == undefined) {
+        i = Math.floor(Math.random() * this.#possibleMoves.length);
+        if (i == this.#possibleMoves.length) {
+          i = i - 1;
+        }
+        if (i == -1) {
+          return "error";
+        }
+      }
+    } else {
+      i = Math.floor(Math.random() * this.#possibleMoves.length);
+      if (i == this.#possibleMoves.length) {
+        i = i - 1;
+      }
+      if (i == -1) {
+        return "error";
+      }
+    }
+    console.log(i);
     let result;
     if (this.#prioMoves.length != 0) {
-      result = this.#prioMoves[0];
-      this.#prioMoves.shift();
+      if (
+        this.#prioMoves[0].x < 0 ||
+        this.#prioMoves[0].x >= this.#grid.length ||
+        this.#prioMoves[0].y < 0 ||
+        this.#prioMoves[0].y >= this.#grid.length
+      ) {
+        result = { x: this.#possibleMoves[i].x, y: this.#possibleMoves[i].y };
+        this.#possibleMoves.splice(i, 1);
+        this.#prioMoves.shift();
+        return result;
+      } else {
+        result = this.#prioMoves[0];
+        let index = (() => {
+          for (let j = 0; j < this.#possibleMoves.length; j++) {
+            if (
+              this.#possibleMoves[j].x == result.x &&
+              this.#possibleMoves[j].y == result.y
+            ) {
+              return j;
+            }
+          }
+        })();
+        if (index == undefined) {
+          this.#prioMoves.shift();
+          return this.newAttackVector();
+        }
+        this.#possibleMoves.splice(index, 1);
+        this.#prioMoves.shift();
+        return result;
+      }
+    } else {
+      result = { x: this.#possibleMoves[i].x, y: this.#possibleMoves[i].y };
+      this.#possibleMoves.splice(i, 1);
       return result;
     }
-    console.log(this.#possibleMoves[i], i, this.#possibleMoves.length);
-    result = { x: this.#possibleMoves[i].x, y: this.#possibleMoves[i].y };
-    this.#possibleMoves.splice(i, 1);
-    return result;
   }
 
   play() {
@@ -68,62 +145,58 @@ class aiPlayer {
     }
     let coord = this.newAttackVector();
     let result = 0;
+    console.log(this.#lastMoves, this.#prioMoves, coord);
     if (this.#oponent.board.grid[coord.x][coord.y] == 1) {
       result = 1;
-      if (this.#lastMoves.length > 0) {
-        if (this.#lastMoves[this.#lastMoves.length - 1].result == 1) {
-          let xDiference =
-            this.#lastMoves[this.#lastMoves.length - 1].x - coord.x;
-          let yDiference =
-            this.#lastMoves[this.#lastMoves.length - 1].y - coord.y;
-          if (xDiference == 0) {
-            if (yDiference < 0) {
-              this.#prioMoves.push({ x: coord.x, y: coord.y - 1 });
-            } else {
-              this.#prioMoves.push({ x: coord.x, y: coord.y + 1 });
-            }
-          }
-          if (yDiference == 0) {
-            if (xDiference < 0) {
-              this.#prioMoves.push({ x: coord.x - 1, y: coord.y });
-            } else {
-              this.#prioMoves.push({ x: coord.x + 1, y: coord.y });
-            }
-          }
-        }
+      let index = this.#prioMoves.length;
+      if (index == 0 && this.#lastMoves[0] === undefined) {
+        this.#prioMoves.push(
+          { x: coord.x + 1, y: coord.y },
+          { x: coord.x - 1, y: coord.y },
+          { x: coord.x, y: coord.y + 1 },
+          { x: coord.x, y: coord.y - 1 }
+        );
+      } else if (this.#lastMoves[0].result == 0) {
+        this.#prioMoves.push(
+          { x: coord.x + 1, y: coord.y },
+          { x: coord.x - 1, y: coord.y },
+          { x: coord.x, y: coord.y + 1 },
+          { x: coord.x, y: coord.y - 1 }
+        );
       } else {
-        let index = this.#prioMoves.length;
-        switch (index) {
-          case 0:
-            this.#prioMoves.push(
-              { x: coord.x + 1, y: coord.y },
-              { x: coord.x - 1, y: coord.y },
-              { x: coord.x, y: coord.y + 1 },
-              { x: coord.x, y: coord.y - 1 }
-            );
-            break;
-          case 1:
-            this.#prioMoves.push({ x: coord.x, y: coord.y + 1 });
-            break;
-          case 2:
-            this.#prioMoves.push({ x: coord.x - 1, y: coord.y });
-            break;
-          case 3:
-            this.#prioMoves.push({ x: coord.x + 1, y: coord.y });
-            break;
-          default:
-            if (this.#prioMoves.length > 4) {
-              if (
-                this.#prioMoves[this.#prioMoves.length - 4][coord.x][coord.y] ==
-                1
-              ) {
-                this.#prioMoves.push({ x: coord.x, y: coord.y - 1 });
-              }
-            } else break;
+        if (this.#lastMoves[0].result == 1) {
+          if (
+            coord.x > this.#lastMoves[0].x &&
+            coord.y == this.#lastMoves[0].y
+          ) {
+            this.#prioMoves.unshift({ x: coord.x + 1, y: coord.y });
+            this.#prioMoves.unshift({ x: coord.x - 1, y: coord.y });
+          }
+          if (
+            coord.x < this.#lastMoves[0].x &&
+            coord.y == this.#lastMoves[0].y
+          ) {
+            this.#prioMoves.unshift({ x: coord.x + 1, y: coord.y });
+            this.#prioMoves.unshift({ x: coord.x - 1, y: coord.y });
+          }
+          if (
+            coord.x == this.#lastMoves[0].x &&
+            coord.y > this.#lastMoves[0].y
+          ) {
+            this.#prioMoves.unshift({ x: coord.x, y: coord.y - 1 });
+            this.#prioMoves.unshift({ x: coord.x, y: coord.y + 1 });
+          }
+          if (
+            coord.x == this.#lastMoves[0].x &&
+            coord.y < this.#lastMoves[0].y
+          ) {
+            this.#prioMoves.unshift({ x: coord.x, y: coord.y + 1 });
+            this.#prioMoves.unshift({ x: coord.x, y: coord.y - 1 });
+          }
         }
       }
     }
-    this.#lastMoves.push({ x: coord.x, y: coord.y, result: result });
+    this.#lastMoves.unshift({ x: coord.x, y: coord.y, result: result });
 
     return coord;
   }
