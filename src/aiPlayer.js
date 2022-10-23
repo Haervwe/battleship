@@ -5,8 +5,8 @@ class aiPlayer {
   #lastMoves;
   #player;
   #oponent;
-  #moveQueue;
   #prioMoves;
+  #possibleMoves;
   constructor(size, player, oponent) {
     this.#grid = (() => {
       let newGrid = [];
@@ -22,22 +22,16 @@ class aiPlayer {
     this.#lastMoves = [];
     this.#player = player;
     this.#oponent = oponent;
-    this.#moveQueue = (() => {
-      let initMoves = [];
-      for (let i = size - 1; i < size; i++) {
-        let x = i;
-        for (let j = Math.floor(size / 2); j < Math.floor(size / 2); j++) {
-          let y = j;
-          if (x & (2 == 0)) {
-            initMoves.push({ x: x, y: y * 2 });
-          } else {
-          }
-          initMoves.push({ x: x, y: y * 2 + 1 });
+    this.#prioMoves = [];
+    this.#possibleMoves = (() => {
+      let movesArray = [];
+      for (let i = 0; i < size; i++) {
+        for (let j = 0; j < size; j++) {
+          movesArray.push({ x: i, y: j });
         }
       }
-      return initMoves;
+      return movesArray;
     })();
-    this.#prioMoves = [];
   }
   placeShips() {
     let dir = ["x", "y"];
@@ -50,58 +44,33 @@ class aiPlayer {
       }
     }
   }
-  newAttackVector() {
-    let x = Math.floor(Math.random() * this.#grid.length);
-    let y = Math.floor(Math.random() * this.#grid.length);
-    let result = { x: 0, y: 0 };
 
+  newAttackVector() {
+    if (this.#player.board.isGameOver() == true) {
+      return "gameOver";
+    }
+    let i = Math.floor(Math.random() * this.#possibleMoves.length);
+    let result;
     if (this.#prioMoves.length != 0) {
       result = this.#prioMoves[0];
       this.#prioMoves.shift();
       return result;
     }
-    if (this.#moveQueue.length != 0) {
-      result = this.#moveQueue[0];
-      this.#moveQueue.shift();
-      return result;
-    }
-    return { x: x, y: y };
+    console.log(this.#possibleMoves[i], i, this.#possibleMoves.length);
+    result = { x: this.#possibleMoves[i].x, y: this.#possibleMoves[i].y };
+    this.#possibleMoves.splice(i, 1);
+    return result;
   }
+
   play() {
-    let coord = this.newAttackVector();
-    let check = () => {
-      result = true;
-      for (let i = 0; i < this.#lastMoves.length; i++) {
-        if (
-          (coord.x == this.#lastMoves[i].x &&
-            coord.y == this.#lastMoves[i].y) ||
-          coord.x < 0 ||
-          coord.y < 0 ||
-          coord.x >= this.#grid.length ||
-          coord.y >= this.#grid.length
-        ) {
-          result = false;
-        }
-      }
-      return result;
-    };
-    while (check == false) {
-      console.log(check);
-      coord = this.newAttackVector();
+    if (this.#player.board.isGameOver() == true) {
+      return "gameOver";
     }
+    let coord = this.newAttackVector();
     let result = 0;
-    console.log(
-      "result:",
-      coord.x,
-      coord.y,
-      "Queue:",
-      this.#moveQueue,
-      "Prio;",
-      this.#prioMoves
-    );
     if (this.#oponent.board.grid[coord.x][coord.y] == 1) {
       result = 1;
-      if (this.#lastMoves.length > 1) {
+      if (this.#lastMoves.length > 0) {
         if (this.#lastMoves[this.#lastMoves.length - 1].result == 1) {
           let xDiference =
             this.#lastMoves[this.#lastMoves.length - 1].x - coord.x;
@@ -155,17 +124,7 @@ class aiPlayer {
       }
     }
     this.#lastMoves.push({ x: coord.x, y: coord.y, result: result });
-    console.log(
-      "result:",
-      coord.x,
-      coord.y,
-      "Queue:",
-      this.#moveQueue,
-      "Prio;",
-      this.#prioMoves,
-      "last moves",
-      this.#lastMoves
-    );
+
     return coord;
   }
 }

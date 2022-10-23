@@ -236,14 +236,16 @@ function nextTurn(x, y, type) {
       return;
     }
     player2Board = renderBoard(currentGame.player2, "player2Board", true);
+
     let aiMove = aiPlay.play();
     let result = currentGame.turn(aiMove.x, aiMove.y);
     while (result != undefined) {
+      if (result == true) {
+        renderWinner(currentGame.currentPlayer.name);
+        return;
+      }
       aiMove = aiPlay.play();
       result = currentGame.turn(aiMove.x, aiMove.y);
-      if (playermove == true) {
-        renderWinner(currentGame.player1.name);
-      }
     }
     player1Board = renderBoard(currentGame.player1, "player1Board", false);
     return;

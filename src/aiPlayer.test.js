@@ -8,7 +8,7 @@ it("checks ai player whole function, making two instances play against eachother
   ai1.placeShips();
   let ai2 = new aiPlayer(rules.size, game.player2, game.player1);
   ai2.placeShips();
-  console.log(game.player2.board.grid, game.winner);
+
   let stop = 0;
   let ai2play;
   let ai1play;
@@ -16,6 +16,9 @@ it("checks ai player whole function, making two instances play against eachother
     ai1play = ai1.play();
     let test = game.turn(ai1play.x, ai1play.y);
     while (test != undefined) {
+      if (game.winner != null) {
+        break;
+      }
       ai1play = ai1.play();
       test = game.turn(ai1play.x, ai1play.y);
     }
@@ -23,9 +26,12 @@ it("checks ai player whole function, making two instances play against eachother
       break;
     }
     ai2play = ai2.play();
-    console.log(game.player2.board.grid, game.winner);
+
     let test2 = game.turn(ai2play.x, ai2play.y);
     while (test2 != undefined) {
+      if (game.winner != null) {
+        break;
+      }
       ai2play = ai2.play();
       test2 = game.turn(ai2play.x, ai2play.y);
     }
@@ -34,6 +40,6 @@ it("checks ai player whole function, making two instances play against eachother
     }
     stop++;
   }
-  console.log(game.player2.board.grid, game.winner);
+
   expect(typeof game.winner).toBe("string");
 });
